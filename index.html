@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>두뇌 게임 모음 🎮</title>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f3ee;
+    --ink: #1a1a1a;
+    --ink-soft: #555;
+    --line: #e8e5de;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Pretendard', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 40px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .container { max-width: 600px; width: 100%; }
+  .header { text-align: center; margin-bottom: 40px; }
+  .header h1 {
+    font-size: 36px;
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    margin-bottom: 10px;
+  }
+  .header p { color: var(--ink-soft); font-size: 15px; }
+  .grid { display: grid; gap: 18px; }
+  .card {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    padding: 28px;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+  }
+  .card.dopamine::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: #ff5a36;
+  }
+  .card.classroom::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: #2a6df4;
+  }
+  .card .emoji { font-size: 48px; margin-bottom: 12px; }
+  .card h2 {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+  .card p { color: var(--ink-soft); font-size: 14px; line-height: 1.6; margin-bottom: 14px; }
+  .card .games {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .card .games span {
+    background: var(--bg);
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink-soft);
+  }
+  .footer {
+    text-align: center;
+    margin-top: 40px;
+    color: var(--ink-soft);
+    font-size: 12px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>두뇌 게임 모음 🎮</h1>
+    <p>잠깐 쉬어가며 즐기는 미니 게임들</p>
+  </div>
+
+  <div class="grid">
+    <a href="dopamine-brain.html" class="card dopamine">
+      <div class="emoji">🧠</div>
+      <h2>도파민에 절여진 뇌 구하기</h2>
+      <p>숏폼에 녹은 뇌를 깨우는 게임 두 가지. 집중력과 단기기억력을 시험해보세요.</p>
+      <div class="games">
+        <span>🎨 색깔과 글자의 싸움</span>
+        <span>🔢 3초 전을 기억하라</span>
+      </div>
+    </a>
+
+    <a href="classroom-games.html" class="card classroom">
+      <div class="emoji">🎓</div>
+      <h2>학생들과 함께!</h2>
+      <p>교실에서 다 같이 즐기는 두뇌 게임. 8가지 카테고리 자음 퀴즈와 집중력 측정.</p>
+      <div class="games">
+        <span>🔤 한글 자음 퀴즈</span>
+        <span>🎯 1부터 25까지!</span>
+      </div>
+    </a>
+  </div>
+
+  <div class="footer">
+    개인 기록은 브라우저에 저장됩니다 (localStorage)
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,1926 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>학생들과 함께! 🎓</title>
+    <link
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #f5f3ee;
+        --bg-card: #ffffff;
+        --ink: #1a1a1a;
+        --ink-soft: #555;
+        --ink-mute: #999;
+        --accent: #2a6df4;
+        --accent-soft: #eaf1ff;
+        --accent2: #ff7a00;
+        --good: #00a86b;
+        --good-soft: #e6f7ef;
+        --bad: #d63031;
+        --line: #e8e5de;
+        --shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.1);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      body {
+        font-family:
+          "Pretendard",
+          -apple-system,
+          sans-serif;
+        background: var(--bg);
+        color: var(--ink);
+        min-height: 100vh;
+        padding: 20px;
+        overflow-x: hidden;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      .header {
+        text-align: center;
+        padding: 20px 0 30px;
+      }
+
+      .header .badge {
+        display: inline-block;
+        background: var(--accent-soft);
+        color: var(--accent);
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 14px;
+      }
+
+      .header h1 {
+        font-size: 28px;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        margin-bottom: 8px;
+      }
+
+      .header .sub {
+        color: var(--ink-soft);
+        font-size: 14px;
+        font-weight: 500;
+      }
+
+      .game-select {
+        display: grid;
+        gap: 16px;
+      }
+
+      .game-card {
+        background: var(--bg-card);
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        padding: 24px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .game-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+        border-color: var(--accent);
+      }
+
+      .game-card:active {
+        transform: translateY(0);
+      }
+      .game-card .emoji {
+        font-size: 36px;
+        margin-bottom: 12px;
+      }
+
+      .game-card .tag {
+        display: inline-block;
+        background: var(--accent);
+        color: white;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 700;
+        margin-bottom: 10px;
+        letter-spacing: 0.05em;
+      }
+
+      .game-card .tag.orange {
+        background: var(--accent2);
+      }
+
+      .game-card h2 {
+        font-size: 30px;
+        font-weight: 800;
+        margin-bottom: 6px;
+        letter-spacing: -0.02em;
+      }
+
+      .game-card .desc {
+        color: var(--ink-soft);
+        font-size: 14px;
+        line-height: 1.5;
+        margin-bottom: 14px;
+      }
+
+      .game-card .best {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--ink-mute);
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .game-card .best strong {
+        color: var(--accent);
+        font-size: 15px;
+      }
+
+      .game-screen {
+        display: none;
+      }
+      .game-screen.active {
+        display: block;
+      }
+
+      .top-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 0 20px;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .back-btn {
+        background: none;
+        border: 1px solid var(--line);
+        color: var(--ink);
+        padding: 8px 14px;
+        border-radius: 10px;
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+
+      .back-btn:hover {
+        background: var(--bg-card);
+      }
+
+      .stats {
+        display: flex;
+        gap: 10px;
+      }
+
+      .stat-box {
+        background: var(--bg-card);
+        border: 1px solid var(--line);
+        padding: 6px 14px;
+        border-radius: 10px;
+        text-align: center;
+        min-width: 70px;
+      }
+
+      .stat-box .label {
+        display: block;
+        font-size: 10px;
+        color: var(--ink-mute);
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .stat-box .value {
+        display: block;
+        font-size: 18px;
+        font-weight: 800;
+        color: var(--ink);
+        font-variant-numeric: tabular-nums;
+      }
+
+      .game-area {
+        background: var(--bg-card);
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        padding: 30px 24px;
+        min-height: 400px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        box-shadow: var(--shadow);
+      }
+
+      .category-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        width: 100%;
+        max-width: 400px;
+        margin-top: 18px;
+      }
+
+      .cat-btn {
+        padding: 16px 10px;
+        border: 2px solid var(--line);
+        background: var(--bg);
+        border-radius: 14px;
+        font-family: inherit;
+        font-size: 15px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.15s;
+        color: var(--ink);
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        align-items: center;
+      }
+
+      .cat-btn:hover {
+        border-color: var(--accent);
+        background: var(--accent-soft);
+      }
+      .cat-btn .cat-emoji {
+        font-size: 22px;
+      }
+      .cat-btn .cat-name {
+        font-size: 24px;
+      }
+
+      .cat-btn.all {
+        grid-column: 1 / -1;
+        background: var(--ink);
+        color: white;
+        border-color: var(--ink);
+      }
+
+      .cat-btn.all:hover {
+        background: var(--accent);
+        border-color: var(--accent);
+      }
+
+      .quiz-category-label {
+        font-size: 48px;
+        color: var(--ink-mute);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: 10px;
+      }
+
+      .quiz-jamo {
+        font-size: clamp(50px, 14vw, 80px);
+        font-weight: 900;
+        letter-spacing: 0.15em;
+        margin: 16px 0 24px;
+        color: var(--accent);
+        line-height: 1.1;
+        word-break: keep-all;
+        text-align: center;
+      }
+
+      /* 속담은 더 작게 */
+      .quiz-jamo.proverb {
+        font-size: clamp(20px, 5.5vw, 32px);
+        letter-spacing: 0.1em;
+      }
+
+      .quiz-input {
+        width: 100%;
+        max-width: 360px;
+        padding: 16px;
+        border: 2px solid var(--line);
+        border-radius: 14px;
+        font-family: inherit;
+        font-size: 18px;
+        font-weight: 700;
+        text-align: center;
+        background: var(--bg);
+        color: var(--ink);
+        margin-bottom: 10px;
+      }
+
+      .quiz-input:focus {
+        outline: none;
+        border-color: var(--accent);
+      }
+
+      .quiz-controls {
+        display: flex;
+        gap: 8px;
+        width: 100%;
+        max-width: 360px;
+      }
+
+      .quiz-controls button {
+        flex: 1;
+        padding: 14px;
+        border: none;
+        border-radius: 12px;
+        font-family: inherit;
+        font-size: 15px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+
+      .quiz-submit {
+        background: var(--ink);
+        color: white;
+      }
+      .quiz-submit:hover {
+        background: var(--accent);
+      }
+      .quiz-pass {
+        background: transparent;
+        color: var(--ink-soft);
+        border: 1px solid var(--line) !important;
+      }
+      .quiz-pass:hover {
+        color: var(--accent2);
+        border-color: var(--accent2) !important;
+      }
+
+      .quiz-feedback {
+        margin-top: 16px;
+        font-size: 14px;
+        font-weight: 700;
+        min-height: 24px;
+        text-align: center;
+        max-width: 360px;
+        word-break: keep-all;
+      }
+
+      .quiz-feedback.correct {
+        color: var(--good);
+      }
+      .quiz-feedback.wrong {
+        color: var(--bad);
+      }
+      .quiz-feedback.pass {
+        color: var(--ink-mute);
+      }
+
+      .schulte-info {
+        display: flex;
+        justify-content: center;
+        gap: 14px;
+        margin-bottom: 18px;
+        font-size: 14px;
+        color: var(--ink-soft);
+        font-weight: 600;
+      }
+
+      .schulte-info span strong {
+        color: var(--accent);
+        font-size: 16px;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .schulte-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 6px;
+        width: 100%;
+        max-width: 360px;
+        aspect-ratio: 1;
+      }
+
+      .schulte-cell {
+        background: var(--bg);
+        border: 2px solid var(--line);
+        border-radius: 10px;
+        font-family: inherit;
+        font-size: clamp(16px, 4.5vw, 24px);
+        font-weight: 800;
+        cursor: pointer;
+        transition: all 0.1s;
+        color: var(--ink);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .schulte-cell:hover {
+        border-color: var(--ink);
+      }
+      .schulte-cell:active {
+        transform: scale(0.95);
+      }
+      .schulte-cell.done {
+        background: var(--good-soft);
+        color: var(--good);
+        border-color: var(--good);
+        cursor: default;
+      }
+      .schulte-cell.wrong {
+        background: #ffe5e5;
+        border-color: var(--bad);
+      }
+
+      .difficulty-row {
+        display: flex;
+        gap: 8px;
+        margin-top: 18px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .diff-btn {
+        padding: 10px 18px;
+        border: 2px solid var(--line);
+        background: var(--bg);
+        border-radius: 10px;
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.15s;
+        color: var(--ink-soft);
+      }
+
+      .diff-btn.active {
+        background: var(--accent);
+        color: white;
+        border-color: var(--accent);
+      }
+
+      .start-screen,
+      .result-screen {
+        text-align: center;
+        padding: 20px 0;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .start-screen h2,
+      .result-screen h2 {
+        font-size: 24px;
+        font-weight: 800;
+        margin-bottom: 12px;
+        letter-spacing: -0.02em;
+      }
+
+      .start-screen .desc,
+      .result-screen .desc {
+        color: var(--ink-soft);
+        font-size: 15px;
+        line-height: 1.6;
+        margin-bottom: 20px;
+        max-width: 380px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .big-score {
+        font-size: 56px;
+        font-weight: 900;
+        color: var(--accent);
+        line-height: 1;
+        margin: 20px 0 6px;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .big-score .unit {
+        font-size: 24px;
+        color: var(--ink-soft);
+        font-weight: 700;
+        margin-left: 6px;
+      }
+
+      .score-label {
+        font-size: 33px;
+        color: var(--ink-mute);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: 20px;
+      }
+
+      .new-record {
+        display: inline-block;
+        background: var(--accent2);
+        color: white;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 800;
+        margin-bottom: 16px;
+        letter-spacing: 0.05em;
+        animation: bounce 0.6s ease;
+      }
+
+      @keyframes bounce {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-8px);
+        }
+      }
+
+      .action-btn {
+        padding: 14px 28px;
+        background: var(--ink);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-family: inherit;
+        font-size: 15px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.15s;
+        margin: 4px;
+      }
+
+      .action-btn:hover {
+        background: var(--accent);
+      }
+      .action-btn:active {
+        transform: scale(0.97);
+      }
+      .action-btn.secondary {
+        background: transparent;
+        color: var(--ink);
+        border: 1px solid var(--line);
+      }
+      .action-btn.secondary:hover {
+        background: var(--bg-card);
+        color: var(--accent);
+        border-color: var(--accent);
+      }
+
+      .ranking {
+        background: var(--bg-card);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 18px;
+        margin-top: 20px;
+        text-align: left;
+        max-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .ranking h3 {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--ink-mute);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: 12px;
+      }
+
+      .rank-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--line);
+        font-size: 14px;
+        gap: 8px;
+      }
+
+      .rank-item:last-child {
+        border-bottom: none;
+      }
+      .rank-item .rank {
+        font-weight: 800;
+        color: var(--accent);
+        width: 24px;
+        flex-shrink: 0;
+      }
+      .rank-item .score {
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
+        flex-shrink: 0;
+      }
+      .rank-item .date {
+        color: var(--ink-mute);
+        font-size: 12px;
+        flex-shrink: 0;
+      }
+      .rank-item .meta {
+        color: var(--ink-soft);
+        font-size: 12px;
+        font-weight: 600;
+        flex: 1;
+        text-align: center;
+      }
+      .rank-item.empty {
+        color: var(--ink-mute);
+        justify-content: center;
+        padding: 12px 0;
+      }
+
+      .countdown {
+        font-size: 100px;
+        font-weight: 900;
+        color: var(--accent);
+        animation: countPulse 1s ease;
+      }
+
+      @keyframes countPulse {
+        0% {
+          transform: scale(0.8);
+          opacity: 0;
+        }
+        50% {
+          transform: scale(1.1);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(1);
+          opacity: 0;
+        }
+      }
+
+      .wrong-list {
+        text-align: left;
+        margin: 14px auto;
+        max-width: 380px;
+        background: var(--bg);
+        border-radius: 12px;
+        padding: 14px;
+        max-height: 220px;
+        overflow-y: auto;
+      }
+
+      .wrong-list h4 {
+        font-size: 12px;
+        color: var(--ink-mute);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: 8px;
+      }
+
+      .wrong-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 6px 0;
+        font-size: 13px;
+        border-bottom: 1px dashed var(--line);
+        gap: 10px;
+      }
+
+      .wrong-item:last-child {
+        border-bottom: none;
+      }
+      .wrong-item .jamo {
+        color: var(--accent);
+        font-weight: 800;
+        flex-shrink: 0;
+      }
+      .wrong-item .ans {
+        color: var(--ink);
+        font-weight: 600;
+        text-align: right;
+        word-break: keep-all;
+      }
+
+      @media (max-width: 480px) {
+        body {
+          padding: 14px;
+        }
+        .header h1 {
+          font-size: 24px;
+        }
+        .game-card {
+          padding: 20px;
+        }
+        .game-area {
+          padding: 24px 16px;
+          min-height: 380px;
+        }
+        .stat-box {
+          min-width: 60px;
+          padding: 5px 10px;
+        }
+        .stat-box .value {
+          font-size: 16px;
+        }
+        .schulte-grid {
+          max-width: 320px;
+          gap: 5px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- 메인 -->
+      <div id="screen-home" class="game-screen active">
+        <div class="header">
+          <div class="badge">🎓 CLASSROOM</div>
+          <h1>학생들과 함께!</h1>
+          <div class="sub">교실에서 다 같이 즐기는 두뇌 게임</div>
+        </div>
+
+        <div class="game-select">
+          <div class="game-card" onclick="goTo('quiz-category')">
+            <div class="emoji">🔤</div>
+            <div class="tag">한글 자음 퀴즈</div>
+            <h2>ㅎㄹㅇ는 무엇일까?</h2>
+            <p class="desc">
+              자음만 보고 단어를 맞혀보세요. 8개 카테고리 중 골라서 도전! 60초
+              동안 최대한 많이.
+            </p>
+            <div class="best">
+              🏆 최고기록: <strong id="home-quiz-best">-</strong>
+            </div>
+          </div>
+
+          <div class="game-card" onclick="goTo('schulte-start')">
+            <div class="emoji">🎯</div>
+            <div class="tag orange">집중력 측정</div>
+            <h2>1부터 25까지!</h2>
+            <p class="desc">
+              뒤죽박죽 섞인 숫자를 순서대로 클릭하세요. 빠를수록 좋아요. 시간
+              단축이 곧 실력.
+            </p>
+            <div class="best">
+              🏆 최단시간: <strong id="home-schulte-best">-</strong>
+            </div>
+          </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 24px">
+          <button
+            class="back-btn"
+            onclick="window.location.href = 'index.html'"
+          >
+            ← 메인으로 돌아가기
+          </button>
+        </div>
+      </div>
+
+      <!-- 카테고리 선택 -->
+      <div id="screen-quiz-category" class="game-screen">
+        <div class="top-bar">
+          <button class="back-btn" onclick="goTo('home')">← 돌아가기</button>
+        </div>
+        <div class="game-area">
+          <div class="start-screen">
+            <div style="font-size: 60px; margin-bottom: 10px">🔤</div>
+            <h2>카테고리 선택</h2>
+            <p class="desc">어떤 분야의 자음 퀴즈를 풀어볼까요?</p>
+            <div class="category-grid">
+              <button class="cat-btn all" onclick="startQuiz('all')">
+                <span class="cat-emoji">🎲</span
+                ><span class="cat-name">전체 랜덤</span>
+              </button>
+              <button class="cat-btn" onclick="startQuiz('animal')">
+                <span class="cat-emoji">🐾</span
+                ><span class="cat-name">동물</span>
+              </button>
+              <button class="cat-btn" onclick="startQuiz('food')">
+                <span class="cat-emoji">🍜</span
+                ><span class="cat-name">음식</span>
+              </button>
+              <button class="cat-btn" onclick="startQuiz('country')">
+                <span class="cat-emoji">🌍</span
+                ><span class="cat-name">나라</span>
+              </button>
+              <button class="cat-btn" onclick="startQuiz('sports')">
+                <span class="cat-emoji">⚽</span
+                ><span class="cat-name">스포츠</span>
+              </button>
+              <button class="cat-btn" onclick="startQuiz('history')">
+                <span class="cat-emoji">📜</span
+                ><span class="cat-name">한국사</span>
+              </button>
+              <button class="cat-btn" onclick="startQuiz('celeb')">
+                <span class="cat-emoji">🎤</span
+                ><span class="cat-name">연예</span>
+              </button>
+              <button class="cat-btn" onclick="startQuiz('science')">
+                <span class="cat-emoji">🔬</span
+                ><span class="cat-name">과학</span>
+              </button>
+              <button class="cat-btn" onclick="startQuiz('proverb')">
+                <span class="cat-emoji">💬</span
+                ><span class="cat-name">속담</span>
+              </button>
+            </div>
+            <div class="ranking" id="quiz-ranking"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 퀴즈 플레이 -->
+      <div id="screen-quiz-play" class="game-screen">
+        <div class="top-bar">
+          <button class="back-btn" onclick="abortGame('quiz')">
+            ← 그만하기
+          </button>
+          <div class="stats">
+            <div class="stat-box">
+              <span class="label">시간</span
+              ><span class="value" id="quiz-time">60</span>
+            </div>
+            <div class="stat-box">
+              <span class="label">점수</span
+              ><span class="value" id="quiz-score">0</span>
+            </div>
+          </div>
+        </div>
+        <div class="game-area">
+          <div id="quiz-countdown" class="countdown">3</div>
+          <div
+            id="quiz-game"
+            style="
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              width: 100%;
+              text-align: center;
+            "
+          >
+            <div class="quiz-category-label" id="quiz-cat-label">동물</div>
+            <div class="quiz-jamo" id="quiz-jamo">ㅎㄹㅇ</div>
+            <input
+              type="text"
+              class="quiz-input"
+              id="quiz-input"
+              autocomplete="off"
+              placeholder="정답을 입력하세요"
+            />
+            <div class="quiz-controls">
+              <button class="quiz-pass" onclick="passQuiz()">패스</button>
+              <button class="quiz-submit" onclick="submitQuiz()">제출</button>
+            </div>
+            <div class="quiz-feedback" id="quiz-feedback"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 퀴즈 결과 -->
+      <div id="screen-quiz-result" class="game-screen">
+        <div class="top-bar">
+          <button class="back-btn" onclick="goTo('home')">← 메인으로</button>
+        </div>
+        <div class="game-area">
+          <div class="result-screen">
+            <div id="quiz-new-record" style="display: none" class="new-record">
+              🎉 NEW RECORD
+            </div>
+            <div class="score-label">최종 점수</div>
+            <div class="big-score" id="quiz-final">
+              0<span class="unit">점</span>
+            </div>
+            <p class="desc" id="quiz-grade"></p>
+            <div id="quiz-wrong-list"></div>
+            <button class="action-btn" onclick="goTo('quiz-category')">
+              다른 카테고리
+            </button>
+            <button class="action-btn secondary" onclick="goTo('home')">
+              메인으로
+            </button>
+            <div class="ranking" id="quiz-ranking-result"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 슐테 시작 -->
+      <div id="screen-schulte-start" class="game-screen">
+        <div class="top-bar">
+          <button class="back-btn" onclick="goTo('home')">← 돌아가기</button>
+        </div>
+        <div class="game-area">
+          <div class="start-screen">
+            <div style="font-size: 60px; margin-bottom: 10px">🎯</div>
+            <h2>1부터 N까지!</h2>
+            <p class="desc">
+              격자에 무작위로 배치된 숫자를<br />
+              1부터 순서대로 빠르게 클릭하세요.<br />
+              틀리면 페널티 +1초!
+            </p>
+            <div class="difficulty-row">
+              <button
+                class="diff-btn active"
+                data-size="3"
+                onclick="setDifficulty(3, this)"
+              >
+                3×3 (1~9)
+              </button>
+              <button
+                class="diff-btn"
+                data-size="5"
+                onclick="setDifficulty(5, this)"
+              >
+                5×5 (1~25)
+              </button>
+              <button
+                class="diff-btn"
+                data-size="6"
+                onclick="setDifficulty(6, this)"
+              >
+                6×6 (1~36)
+              </button>
+            </div>
+            <div style="margin-top: 20px">
+              <button class="action-btn" onclick="startSchulte()">
+                시작하기
+              </button>
+            </div>
+            <div class="ranking" id="schulte-ranking"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 슐테 플레이 -->
+      <div id="screen-schulte-play" class="game-screen">
+        <div class="top-bar">
+          <button class="back-btn" onclick="abortGame('schulte')">
+            ← 그만하기
+          </button>
+          <div class="stats">
+            <div class="stat-box">
+              <span class="label">다음</span
+              ><span class="value" id="schulte-next">1</span>
+            </div>
+            <div class="stat-box">
+              <span class="label">시간</span
+              ><span class="value" id="schulte-time">0.0</span>
+            </div>
+          </div>
+        </div>
+        <div class="game-area">
+          <div id="schulte-countdown" class="countdown">3</div>
+          <div id="schulte-game" style="display: none; width: 100%">
+            <div class="schulte-info">
+              <span>크기: <strong id="schulte-size-label">5×5</strong></span>
+              <span>페널티: <strong id="schulte-penalty">0초</strong></span>
+            </div>
+            <div class="schulte-grid" id="schulte-grid"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 슐테 결과 -->
+      <div id="screen-schulte-result" class="game-screen">
+        <div class="top-bar">
+          <button class="back-btn" onclick="goTo('home')">← 메인으로</button>
+        </div>
+        <div class="game-area">
+          <div class="result-screen">
+            <div
+              id="schulte-new-record"
+              style="display: none"
+              class="new-record"
+            >
+              🎉 NEW RECORD
+            </div>
+            <div class="score-label">완료 시간</div>
+            <div class="big-score" id="schulte-final">
+              0.0<span class="unit">초</span>
+            </div>
+            <p class="desc" id="schulte-grade"></p>
+            <button class="action-btn" onclick="goTo('schulte-start')">
+              다시하기
+            </button>
+            <button class="action-btn secondary" onclick="goTo('home')">
+              메인으로
+            </button>
+            <div class="ranking" id="schulte-ranking-result"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // ============================================
+      //  자음 퀴즈 데이터 (자동 생성, 검증 완료)
+      // ============================================
+      const QUIZ_DATA = {
+        animal: {
+          name: "동물",
+          emoji: "🐾",
+          items: [
+            ["ㅎㄹㅇ", "호랑이"],
+            ["ㅋㄲㄹ", "코끼리"],
+            ["ㄱㅇㅈ", "강아지"],
+            ["ㄱㅇㅇ", "고양이"],
+            ["ㄱㄹ", "기린"],
+            ["ㅎㅁ", "하마"],
+            ["ㅊㅌ", "치타"],
+            ["ㅍㄱ", "펭귄"],
+            ["ㄱㄹㄹ", "고릴라"],
+            ["ㄴㅌ", "낙타"],
+            ["ㅍㄷ", "판다"],
+            ["ㄷㄹㅈ", "다람쥐"],
+            ["ㄴㅂ", "나비"],
+            ["ㅈㅈㄹ", "잠자리"],
+            ["ㄱㅂㅇ", "거북이"],
+            ["ㄲㅁㄱ", "까마귀"],
+            ["ㄲㅊ", "까치"],
+            ["ㅎㅅㅌ", "햄스터"],
+            ["ㅋㅇㄹ", "코알라"],
+            ["ㄱㅇ", "거위"],
+            ["ㄷㅈ", "돼지"],
+            ["ㅇㅇ", "여우"],
+            ["ㄴㄷ", "늑대"],
+            ["ㅌㄲ", "토끼"],
+            ["ㄷㅅㄹ", "독수리"],
+            ["ㅁㄸㄱ", "메뚜기"],
+            ["ㅇㄹ", "오리"],
+            ["ㄷ", "닭"],
+            ["ㄱㄹ", "고래"],
+            ["ㅅㅇ", "상어"],
+            ["ㅁㅇ", "문어"],
+            ["ㅇㅈㅇ", "오징어"],
+            ["ㅎㅁ", "해마"],
+            ["ㅇㅇ", "악어"],
+            ["ㄱㄱㄹ", "개구리"],
+            ["ㄷㄲㅂ", "두꺼비"],
+            ["ㄱㅁ", "거미"],
+            ["ㅂ", "벌"],
+            ["ㄱㅁ", "개미"],
+            ["ㄷㅍㅇ", "달팽이"],
+            ["ㅈㄹㅇ", "지렁이"],
+            ["ㅊㅅ", "참새"],
+            ["ㅂㄷㄱ", "비둘기"],
+            ["ㅇㅁㅅ", "앵무새"],
+            ["ㅂㅇㅇ", "부엉이"],
+          ],
+        },
+        food: {
+          name: "음식",
+          emoji: "🍜",
+          items: [
+            ["ㄱㅊ", "김치"],
+            ["ㄸㅂㅇ", "떡볶이"],
+            ["ㅂㅂㅂ", "비빔밥"],
+            ["ㄴㅁ", "냉면"],
+            ["ㅉㅈㅁ", "짜장면"],
+            ["ㅉㅃ", "짬뽕"],
+            ["ㅌㅅㅇ", "탕수육"],
+            ["ㅊㅋ", "치킨"],
+            ["ㅍㅈ", "피자"],
+            ["ㅎㅂㄱ", "햄버거"],
+            ["ㅋㄹ", "카레"],
+            ["ㅁㄹㅌ", "마라탕"],
+            ["ㄱㅂ", "갈비"],
+            ["ㅂㄱㄱ", "불고기"],
+            ["ㅅㄱㅅ", "삼겹살"],
+            ["ㅅㄹㅌ", "설렁탕"],
+            ["ㄱㅊㅉㄱ", "김치찌개"],
+            ["ㄷㅈㅉㄱ", "된장찌개"],
+            ["ㅂㄷㅉㄱ", "부대찌개"],
+            ["ㅅㄷㅂ", "순두부"],
+            ["ㄱㅂ", "김밥"],
+            ["ㅈㅁㅂ", "주먹밥"],
+            ["ㄹㅁ", "라면"],
+            ["ㅎㄷㄱ", "핫도그"],
+            ["ㅈㅂ", "족발"],
+            ["ㅂㅆ", "보쌈"],
+            ["ㅅㅂ", "수박"],
+            ["ㅂㄴㄴ", "바나나"],
+            ["ㅅㄱ", "사과"],
+            ["ㅍㄷ", "포도"],
+            ["ㄸㄱ", "딸기"],
+            ["ㅋㅇ", "키위"],
+            ["ㅂㅅㅇ", "복숭아"],
+            ["ㅊㅇ", "참외"],
+            ["ㅇㄹㅈ", "오렌지"],
+            ["ㄹㅁ", "레몬"],
+            ["ㅍㅇㅇㅍ", "파인애플"],
+            ["ㅁㄱ", "망고"],
+            ["ㅇㅁㄹㅋㄴ", "아메리카노"],
+            ["ㅋㅍㄹㄸ", "카페라떼"],
+            ["ㅋㄹ", "콜라"],
+            ["ㅅㅇㄷ", "사이다"],
+            ["ㅇㅁㄹㅇㅅ", "오므라이스"],
+            ["ㄷㄱㅅ", "돈가스"],
+            ["ㅇㄷ", "우동"],
+            ["ㅊㅂ", "초밥"],
+            ["ㅅㄱㅌ", "삼계탕"],
+            ["ㄱㅂㅌ", "갈비탕"],
+            ["ㅇㄱㅈ", "육개장"],
+          ],
+        },
+        country: {
+          name: "나라",
+          emoji: "🌍",
+          items: [
+            ["ㄷㅎㅁㄱ", "대한민국"],
+            ["ㅁㄱ", "미국"],
+            ["ㅈㄱ", "중국"],
+            ["ㅇㅂ", "일본"],
+            ["ㅍㄹㅅ", "프랑스"],
+            ["ㅇㄱ", "영국"],
+            ["ㄷㅇ", "독일"],
+            ["ㅇㅌㄹㅇ", "이탈리아"],
+            ["ㅅㅍㅇ", "스페인"],
+            ["ㅋㄴㄷ", "캐나다"],
+            ["ㅎㅈ", "호주"],
+            ["ㄹㅅㅇ", "러시아"],
+            ["ㅂㄹㅈ", "브라질"],
+            ["ㅇㄹㅎㅌㄴ", "아르헨티나"],
+            ["ㅁㅅㅋ", "멕시코"],
+            ["ㅇㅈㅌ", "이집트"],
+            ["ㅌㄱ", "태국"],
+            ["ㅂㅌㄴ", "베트남"],
+            ["ㅍㄹㅍ", "필리핀"],
+            ["ㅁㄹㅇㅅㅇ", "말레이시아"],
+            ["ㅅㄱㅍㄹ", "싱가포르"],
+            ["ㅇㄷㄴㅅㅇ", "인도네시아"],
+            ["ㅇㄷ", "인도"],
+            ["ㅁㄱ", "몽골"],
+            ["ㅍㄹㄷ", "폴란드"],
+            ["ㅍㄹㄷ", "핀란드"],
+            ["ㄴㄹㅇㅇ", "노르웨이"],
+            ["ㅅㅇㄷ", "스웨덴"],
+            ["ㄷㅁㅋ", "덴마크"],
+            ["ㄴㄷㄹㄷ", "네덜란드"],
+            ["ㄱㄹㅅ", "그리스"],
+            ["ㅋㅂ", "쿠바"],
+            ["ㅋㄹㅂㅇ", "콜롬비아"],
+            ["ㅊㄹ", "칠레"],
+            ["ㅍㄹ", "페루"],
+            ["ㅋㄴ", "케냐"],
+            ["ㅁㄹㅋ", "모로코"],
+            ["ㅇㄹㅋ", "이라크"],
+            ["ㅇㄹ", "이란"],
+            ["ㅌㅋ", "터키"],
+            ["ㅅㅇㅅ", "스위스"],
+            ["ㅇㅅㅌㄹㅇ", "오스트리아"],
+            ["ㅍㄹㅌㄱ", "포르투갈"],
+            ["ㄴㅈㄹㄷ", "뉴질랜드"],
+            ["ㅍㅋㅅㅌ", "파키스탄"],
+          ],
+        },
+        sports: {
+          name: "스포츠",
+          emoji: "⚽",
+          items: [
+            ["ㅊㄱ", "축구"],
+            ["ㅇㄱ", "야구"],
+            ["ㄴㄱ", "농구"],
+            ["ㅂㄱ", "배구"],
+            ["ㅌㄱ", "탁구"],
+            ["ㅌㄴㅅ", "테니스"],
+            ["ㅂㄷㅁㅌ", "배드민턴"],
+            ["ㄱㅍ", "골프"],
+            ["ㅂㅅ", "복싱"],
+            ["ㅌㄱㄷ", "태권도"],
+            ["ㅇㄷ", "유도"],
+            ["ㄱㄷ", "검도"],
+            ["ㅎㄷㅂ", "핸드볼"],
+            ["ㅅㅇ", "수영"],
+            ["ㅈㅈㄱ", "자전거"],
+            ["ㅁㄹㅌ", "마라톤"],
+            ["ㅍㅅ", "펜싱"],
+            ["ㅅㅋ", "스키"],
+            ["ㅅㄴㅂㄷ", "스노보드"],
+            ["ㅋㄹ", "컬링"],
+            ["ㄹㅂ", "럭비"],
+            ["ㅊㅈ", "체조"],
+            ["ㅇㄷ", "역도"],
+            ["ㅇㄱ", "양궁"],
+            ["ㅅㄱ", "사격"],
+            ["ㄹㅅㄹ", "레슬링"],
+            ["ㄷㄱ", "당구"],
+            ["ㅂㄹ", "볼링"],
+            ["ㅅㅁ", "승마"],
+            ["ㅈㅈ", "조정"],
+            ["ㅇㅌ", "요트"],
+            ["ㅅㅍ", "서핑"],
+            ["ㄷㅇㅂ", "다이빙"],
+            ["ㅍㄱ", "피겨"],
+            ["ㅅㅋㅇㅌ", "스케이트"],
+            ["ㅎㅋ", "하키"],
+            ["ㅍㅅ", "풋살"],
+            ["ㅋㄹㅋ", "크리켓"],
+          ],
+        },
+        history: {
+          name: "한국사",
+          emoji: "📜",
+          items: [
+            ["ㅅㅈㄷㅇ", "세종대왕"],
+            ["ㅇㅅㅅ", "이순신"],
+            ["ㅇㅈㄱ", "안중근"],
+            ["ㅇㄱㅅ", "유관순"],
+            ["ㄱㄱㅊ", "강감찬"],
+            ["ㄱㄱㅌㄷㅇ", "광개토대왕"],
+            ["ㅅㄹ", "신라"],
+            ["ㄱㄱㄹ", "고구려"],
+            ["ㅂㅈ", "백제"],
+            ["ㄱㄹ", "고려"],
+            ["ㅈㅅ", "조선"],
+            ["ㅎㄱ", "한글"],
+            ["ㅎㅁㅈㅇ", "훈민정음"],
+            ["ㅎㅂ", "한복"],
+            ["ㄱㅂㄱ", "경복궁"],
+            ["ㄷㄷㅁ", "동대문"],
+            ["ㄴㄷㅁ", "남대문"],
+            ["ㅎㅇ", "한옥"],
+            ["ㄱㅂㅅ", "거북선"],
+            ["ㅂㄱㅅ", "불국사"],
+            ["ㅅㄱㅌ", "석가탑"],
+            ["ㄷㅂㅌ", "다보탑"],
+            ["ㅊㅅㄷ", "첨성대"],
+            ["ㅇㅂ", "의병"],
+            ["ㅅㅇㅇㄷ", "삼일운동"],
+            ["ㄱㅂ", "광복"],
+            ["ㅇㅈㅇㄹ", "임진왜란"],
+            ["ㅂㅈㅎㄹ", "병자호란"],
+            ["ㅎㄱㅈㅈ", "한국전쟁"],
+            ["ㅈㅇㅇ", "정약용"],
+            ["ㄱㅇㅅ", "김유신"],
+            ["ㄱㅂ", "계백"],
+            ["ㅇㅈㅁㄷ", "을지문덕"],
+            ["ㅇㄱㅅㅁ", "연개소문"],
+            ["ㅇㄱ", "왕건"],
+            ["ㅌㅈ", "태조"],
+            ["ㅈㅈ", "정조"],
+            ["ㅇㅈ", "영조"],
+            ["ㅇㅅㄱ", "연산군"],
+            ["ㄱㅎㄱ", "광해군"],
+            ["ㅁㅅㅎㅎ", "명성황후"],
+            ["ㅎㅅㄷㅇㄱ", "흥선대원군"],
+            ["ㅅㄷㅇㅇ", "선덕여왕"],
+          ],
+        },
+        celeb: {
+          name: "연예",
+          emoji: "🎤",
+          items: [
+            ["ㅂㅌㅅㄴㄷ", "방탄소년단"],
+            ["ㅂㄹㅍㅋ", "블랙핑크"],
+            ["ㄴㅈㅅ", "뉴진스"],
+            ["ㅇㅇㅂ", "아이브"],
+            ["ㅇㅅㅍ", "에스파"],
+            ["ㄹㅅㄹㅍ", "르세라핌"],
+            ["ㅇㅇㅇ", "아이유"],
+            ["ㅇㅇㅇ", "임영웅"],
+            ["ㅈㅇㅇ", "장원영"],
+            ["ㅅㅎㅁ", "손흥민"],
+            ["ㄱㅁㅈ", "김민재"],
+            ["ㅇㄱㅇ", "이강인"],
+            ["ㅃㄹㄹ", "뽀로로"],
+            ["ㅍㅋㅍ", "핑크퐁"],
+            ["ㄷㄹㅁ", "드라마"],
+            ["ㅇㅎ", "영화"],
+            ["ㄴㄹ", "노래"],
+            ["ㄷㅅ", "댄스"],
+            ["ㅁㅈㅂㄷㅇ", "뮤직비디오"],
+            ["ㄱㅅ", "가수"],
+            ["ㅂㅇ", "배우"],
+            ["ㄱㄷ", "감독"],
+            ["ㅇㅇㅇ", "연예인"],
+            ["ㅊㅇㅇ", "차은우"],
+            ["ㅈㄴ", "제니"],
+            ["ㄹㅅ", "리사"],
+            ["ㅈㅅ", "지수"],
+            ["ㄹㅈ", "로제"],
+            ["ㅂㅎㅅ", "박효신"],
+            ["ㅈㅇㅍ", "조용필"],
+            ["ㅆㅇ", "싸이"],
+            ["ㅈㄷㄹㄱ", "지드래곤"],
+            ["ㅂㅂ", "빅뱅"],
+            ["ㅇㅅ", "엑소"],
+            ["ㅅㅂㅌ", "세븐틴"],
+            ["ㅌㅇㅇㅅ", "트와이스"],
+            ["ㄹㄷㅂㅂ", "레드벨벳"],
+            ["ㅅㄴㅅㄷ", "소녀시대"],
+            ["ㅇㄷㄱㅅ", "원더걸스"],
+            ["ㅋㄹ", "카라"],
+          ],
+        },
+        science: {
+          name: "과학",
+          emoji: "🔬",
+          items: [
+            ["ㅈㄱ", "지구"],
+            ["ㅌㅇ", "태양"],
+            ["ㄷ", "달"],
+            ["ㅎㅅ", "화성"],
+            ["ㅁㅅ", "목성"],
+            ["ㅌㅅ", "토성"],
+            ["ㄱㅅ", "금성"],
+            ["ㅅㅅ", "수성"],
+            ["ㅎㅇㅅ", "해왕성"],
+            ["ㅊㅇㅅ", "천왕성"],
+            ["ㅇㅎㅅ", "은하수"],
+            ["ㅂㄹㅎ", "블랙홀"],
+            ["ㅈㄹ", "중력"],
+            ["ㅂㅈ", "분자"],
+            ["ㅇㅈ", "원자"],
+            ["ㄷㅂㅈ", "단백질"],
+            ["ㅌㅅㅎㅁ", "탄수화물"],
+            ["ㅈㅂ", "지방"],
+            ["ㅂㅌㅁ", "비타민"],
+            ["ㅁㄴㄹ", "미네랄"],
+            ["ㅅㅍ", "세포"],
+            ["ㅇㅈㅈ", "유전자"],
+            ["ㅅㅅ", "산소"],
+            ["ㅅㅅ", "수소"],
+            ["ㅈㅅ", "질소"],
+            ["ㅇㅅㅎㅌㅅ", "이산화탄소"],
+            ["ㄱㄱ", "공기"],
+            ["ㅂㄹ", "바람"],
+            ["ㄱㄹ", "구름"],
+            ["ㅊㄷ", "천둥"],
+            ["ㅂㄱ", "번개"],
+            ["ㅈㅈ", "지진"],
+            ["ㅎㅅ", "화산"],
+            ["ㅌㅍ", "태풍"],
+            ["ㅂㅇㄹㅅ", "바이러스"],
+            ["ㅂㅌㄹㅇ", "박테리아"],
+            ["ㅂㅅ", "백신"],
+            ["ㅎㅎ", "화학"],
+            ["ㅁㄹ", "물리"],
+            ["ㅅㅁ", "생물"],
+            ["ㅁㅇㄱ", "망원경"],
+            ["ㅎㅁㄱ", "현미경"],
+            ["ㅅㅎ", "실험"],
+            ["ㅈㅈㄹㅇㅈ", "전자레인지"],
+            ["ㅈㅅ", "자석"],
+            ["ㅈㄹ", "전류"],
+            ["ㅈㅇ", "전압"],
+            ["ㄱㅎㅅ", "광합성"],
+          ],
+        },
+        proverb: {
+          name: "속담",
+          emoji: "💬",
+          items: [
+            [
+              "ㄱㄴ ㅁㅇ ㄱㅇㅇ ㅇㄴ ㅁㅇ ㄱㄷ",
+              "가는 말이 고와야 오는 말이 곱다",
+            ],
+            ["ㅂㅈㅈㄷ ㅁㄷㅁ ㄴㄷ", "백지장도 맞들면 낫다"],
+            ["ㅅ ㅇㄱ ㅇㅇㄱ ㄱㅊㄷ", "소 잃고 외양간 고친다"],
+            ["ㄱㅈㄴ ㄱ ㅍ", "가재는 게 편"],
+            ["ㅂ ㅇㄴ ㅁㅇ ㅊㄹ ㄱㄷ", "발 없는 말이 천리 간다"],
+            [
+              "ㅎㄴㅇ ㅁㄴㅈㄷ ㅅㅇㄴ ㄱㅁㅇ ㅇㄷ",
+              "하늘이 무너져도 솟아날 구멍이 있다",
+            ],
+            [
+              "ㅋ ㅅㅇ ㄷ ㅋ ㄴㄱ ㅍ ㅅㅇ ㄷ ㅍ ㄴㄷ",
+              "콩 심은 데 콩 나고 팥 심은 데 팥 난다",
+            ],
+            ["ㄴ ㄴㄱ ㄱㅇㅈㄷ ㅁㄹㄷ", "낫 놓고 기역자도 모른다"],
+            ["ㅊ ㄹ ㄱㄷ ㅎ ㄱㅇㅂㅌ", "천 리 길도 한 걸음부터"],
+            ["ㅁㄴ ㄷㄲㅇ ㅂㄷ ㅉㅎㄷ", "믿는 도끼에 발등 찍힌다"],
+            ["ㄴㅇ ㄸㅇ ㄷ ㅋ ㅂㅇㄷ", "남의 떡이 더 커 보인다"],
+            ["ㄷㅌㄹ ㅋ ㅈㄱ", "도토리 키 재기"],
+            ["ㅎㄹㅇㄷ ㅈ ㅁ ㅎㅁ ㅇㄷ", "호랑이도 제 말 하면 온다"],
+            ["ㅂㄴ ㄷㄷㅇ ㅅㄷㄷ ㄷㄷ", "바늘 도둑이 소도둑 된다"],
+            ["ㅇㅁㅇ ㅁㅇㅇ ㅇㄹㅁㅇ ㅁㄷ", "윗물이 맑아야 아랫물이 맑다"],
+            ["ㅇㅈㄹㅈ ㅁ", "엎질러진 물"],
+            ["ㅇㅅㅇㄷ ㄴㅁㅇㅅ ㄸㅇㅈㄷ", "원숭이도 나무에서 떨어진다"],
+            [
+              "ㅎㄹㄱㅇㅈ ㅂ ㅁㅅㅇ ㅈ ㅁㄹㄷ",
+              "하룻강아지 범 무서운 줄 모른다",
+            ],
+            ["ㅇㅁ ㅇ ㄱㄱㄹ", "우물 안 개구리"],
+            ["ㄷㅈ ㅁㅇ ㅇㄷㄷ", "등잔 밑이 어둡다"],
+            ["ㄲ ㄷㅅ ㄷ", "꿩 대신 닭"],
+            ["ㄱㅅㄹ ㅌㅅ", "갈수록 태산"],
+            ["ㅌㄲ ㅁㅇ ㅌㅅ", "티끌 모아 태산"],
+            ["ㅅㅁㄴ ㅈㅊㅇ ㅁㅇ ㄱ ㅇㄷ", "소문난 잔치에 먹을 것 없다"],
+            ["ㅅㅈㅇ ㅂㅇㄷ", "시작이 반이다"],
+            ["ㅂㅁㅇ ㅂㅇㅇㄱ", "백문이 불여일견"],
+            ["ㅇㄴ ㄸ ㄱㄸㅇ ㅇㄱ ㄴㄲ", "아니 땐 굴뚝에 연기 날까"],
+            [
+              "ㄱㅅㅇ ㅅ ㅁㅇㄹㄷ ㄲㅇㅇ ㅂㅂ",
+              "구슬이 서 말이라도 꿰어야 보배",
+            ],
+          ],
+        },
+      };
+
+      // ============================================
+      //  같은 자음을 가진 단어 매핑 만들기 (동음 자음 정답 처리)
+      //  예: ㄱㄹ 입력 시 "기린", "고래" 둘 다 정답으로 인정
+      // ============================================
+      function buildAcceptMap() {
+        const map = {}; // { category: { jamo: [answer1, answer2, ...] } }
+        Object.keys(QUIZ_DATA).forEach((cat) => {
+          map[cat] = {};
+          QUIZ_DATA[cat].items.forEach(([jamo, ans]) => {
+            if (!map[cat][jamo]) map[cat][jamo] = [];
+            if (!map[cat][jamo].includes(ans)) map[cat][jamo].push(ans);
+          });
+        });
+        // 'all' 카테고리: 모든 카테고리 통합
+        map.all = {};
+        Object.keys(QUIZ_DATA).forEach((cat) => {
+          QUIZ_DATA[cat].items.forEach(([jamo, ans]) => {
+            if (!map.all[jamo]) map.all[jamo] = [];
+            if (!map.all[jamo].includes(ans)) map.all[jamo].push(ans);
+          });
+        });
+        return map;
+      }
+      const ACCEPT_MAP = buildAcceptMap();
+
+      // ============================================
+      //  화면 전환
+      // ============================================
+      function goTo(id) {
+        document
+          .querySelectorAll(".game-screen")
+          .forEach((s) => s.classList.remove("active"));
+        document.getElementById("screen-" + id).classList.add("active");
+        window.scrollTo(0, 0);
+        if (id === "home") updateHomeBests();
+        else if (id === "quiz-category") renderRanking("quiz", "quiz-ranking");
+        else if (id === "schulte-start")
+          renderRanking("schulte", "schulte-ranking");
+      }
+
+      function abortGame(type) {
+        if (type === "quiz") clearInterval(quizTimer);
+        else if (type === "schulte") clearInterval(schulteTimer);
+        goTo("home");
+      }
+
+      // ============================================
+      //  로컬 스토리지
+      // ============================================
+      const STORAGE_KEY = "classroomGamesScores";
+
+      function loadScores() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          return raw ? JSON.parse(raw) : { quiz: [], schulte: [] };
+        } catch (e) {
+          return { quiz: [], schulte: [] };
+        }
+      }
+
+      function saveScore(game, score, meta) {
+        const scores = loadScores();
+        const list = scores[game] || [];
+        const entry = {
+          score: score,
+          meta: meta || "",
+          date: new Date().toLocaleDateString("ko-KR", {
+            month: "2-digit",
+            day: "2-digit",
+          }),
+        };
+        list.push(entry);
+        if (game === "schulte") list.sort((a, b) => a.score - b.score);
+        else list.sort((a, b) => b.score - a.score);
+        scores[game] = list.slice(0, 5);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(scores));
+        return (
+          list[0].score === score &&
+          list.filter((e) => e.score === score).length === 1
+        );
+      }
+
+      function getBest(game) {
+        const scores = loadScores();
+        const list = scores[game] || [];
+        return list.length ? list[0] : null;
+      }
+
+      function renderRanking(game, containerId) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        const scores = loadScores();
+        const list = scores[game] || [];
+        let html = "<h3>나의 TOP 5</h3>";
+        if (list.length === 0) {
+          html += '<div class="rank-item empty">아직 기록이 없어요</div>';
+        } else {
+          list.forEach((entry, idx) => {
+            const scoreText =
+              game === "schulte"
+                ? entry.score.toFixed(1) + "초"
+                : entry.score + "점";
+            html += `<div class="rank-item">
+        <span class="rank">${idx + 1}</span>
+        <span class="score">${scoreText}</span>
+        <span class="meta">${entry.meta || ""}</span>
+        <span class="date">${entry.date}</span>
+      </div>`;
+          });
+        }
+        container.innerHTML = html;
+      }
+
+      function updateHomeBests() {
+        const qBest = getBest("quiz");
+        const sBest = getBest("schulte");
+        document.getElementById("home-quiz-best").textContent = qBest
+          ? qBest.score + "점"
+          : "-";
+        document.getElementById("home-schulte-best").textContent = sBest
+          ? sBest.score.toFixed(1) + "초"
+          : "-";
+      }
+
+      // ============================================
+      //  자음 퀴즈
+      // ============================================
+      let quizScore = 0;
+      let quizTime = 60;
+      let quizTimer = null;
+      let quizCurrentCat = "all";
+      let quizCurrentQuestion = null;
+      let quizPool = [];
+      let quizUsed = [];
+      let quizWrong = []; // 패스+오답 기록
+
+      function getCategoryItems(cat) {
+        if (cat === "all") {
+          const all = [];
+          Object.keys(QUIZ_DATA).forEach((k) => {
+            QUIZ_DATA[k].items.forEach((item) => {
+              all.push({
+                jamo: item[0],
+                answer: item[1],
+                category: QUIZ_DATA[k].name,
+                catKey: k,
+              });
+            });
+          });
+          return all;
+        }
+        return QUIZ_DATA[cat].items.map((item) => ({
+          jamo: item[0],
+          answer: item[1],
+          category: QUIZ_DATA[cat].name,
+          catKey: cat,
+        }));
+      }
+
+      function startQuiz(cat) {
+        quizCurrentCat = cat;
+        quizScore = 0;
+        quizTime = 60;
+        quizUsed = [];
+        quizWrong = [];
+        quizPool = getCategoryItems(cat);
+        quizPool.sort(() => Math.random() - 0.5);
+
+        goTo("quiz-play");
+        document.getElementById("quiz-score").textContent = "0";
+        document.getElementById("quiz-time").textContent = "60";
+        document.getElementById("quiz-game").style.display = "none";
+        document.getElementById("quiz-feedback").textContent = "";
+
+        const cd = document.getElementById("quiz-countdown");
+        cd.style.display = "block";
+        let n = 3;
+        cd.textContent = n;
+        cd.style.animation = "none";
+        void cd.offsetWidth;
+        cd.style.animation = "countPulse 1s ease";
+
+        const countInterval = setInterval(() => {
+          n--;
+          if (n > 0) {
+            cd.textContent = n;
+            cd.style.animation = "none";
+            void cd.offsetWidth;
+            cd.style.animation = "countPulse 1s ease";
+          } else {
+            clearInterval(countInterval);
+            cd.style.display = "none";
+            document.getElementById("quiz-game").style.display = "flex";
+            nextQuiz();
+            document.getElementById("quiz-input").focus();
+            quizTimer = setInterval(() => {
+              quizTime--;
+              document.getElementById("quiz-time").textContent = quizTime;
+              if (quizTime <= 0) endQuiz();
+            }, 1000);
+          }
+        }, 1000);
+      }
+
+      function nextQuiz() {
+        if (quizPool.length === 0) {
+          quizPool = getCategoryItems(quizCurrentCat);
+          quizPool.sort(() => Math.random() - 0.5);
+          quizUsed = [];
+        }
+        quizCurrentQuestion = quizPool.shift();
+        quizUsed.push(quizCurrentQuestion);
+        const jamoEl = document.getElementById("quiz-jamo");
+        jamoEl.textContent = quizCurrentQuestion.jamo;
+        // 속담은 길이가 기니까 클래스 추가
+        if (quizCurrentQuestion.catKey === "proverb")
+          jamoEl.classList.add("proverb");
+        else jamoEl.classList.remove("proverb");
+
+        document.getElementById("quiz-cat-label").textContent =
+          quizCurrentQuestion.category;
+        document.getElementById("quiz-input").value = "";
+        document.getElementById("quiz-feedback").textContent = "";
+        document.getElementById("quiz-feedback").className = "quiz-feedback";
+        document.getElementById("quiz-input").focus();
+      }
+
+      // 정답 비교: 공백 무시, 대소문자 무시
+      function normalizeAnswer(s) {
+        return s.replace(/\s+/g, "").trim();
+      }
+
+      function submitQuiz() {
+        const input = document.getElementById("quiz-input");
+        const userAnswer = normalizeAnswer(input.value);
+        const feedback = document.getElementById("quiz-feedback");
+
+        if (!userAnswer) {
+          input.focus();
+          return;
+        }
+
+        // 같은 자음을 가진 모든 정답 후보
+        const acceptList = ACCEPT_MAP[quizCurrentCat][
+          quizCurrentQuestion.jamo
+        ] || [quizCurrentQuestion.answer];
+        const isCorrect = acceptList.some(
+          (ans) => normalizeAnswer(ans) === userAnswer,
+        );
+
+        if (isCorrect) {
+          quizScore++;
+          document.getElementById("quiz-score").textContent = quizScore;
+          feedback.textContent = "✅ 정답!";
+          feedback.className = "quiz-feedback correct";
+          setTimeout(() => {
+            if (quizTime > 0) nextQuiz();
+          }, 400);
+        } else {
+          // 가능한 정답을 모두 보여주기
+          const answersText =
+            acceptList.length > 1
+              ? `정답: ${acceptList.join(" / ")}`
+              : `정답: ${quizCurrentQuestion.answer}`;
+          feedback.textContent = `❌ ${answersText}`;
+          feedback.className = "quiz-feedback wrong";
+          quizWrong.push({
+            jamo: quizCurrentQuestion.jamo,
+            answers: acceptList,
+          });
+          setTimeout(() => {
+            if (quizTime > 0) nextQuiz();
+          }, 1500);
+        }
+      }
+
+      function passQuiz() {
+        const acceptList = ACCEPT_MAP[quizCurrentCat][
+          quizCurrentQuestion.jamo
+        ] || [quizCurrentQuestion.answer];
+        const feedback = document.getElementById("quiz-feedback");
+        const answersText =
+          acceptList.length > 1
+            ? `정답: ${acceptList.join(" / ")}`
+            : `정답: ${quizCurrentQuestion.answer}`;
+        feedback.textContent = `⏭️ ${answersText}`;
+        feedback.className = "quiz-feedback pass";
+        quizWrong.push({
+          jamo: quizCurrentQuestion.jamo,
+          answers: acceptList,
+        });
+        setTimeout(() => {
+          if (quizTime > 0) nextQuiz();
+        }, 1200);
+      }
+
+      function endQuiz() {
+        clearInterval(quizTimer);
+        const catName =
+          quizCurrentCat === "all" ? "전체" : QUIZ_DATA[quizCurrentCat].name;
+        const isNew = saveScore("quiz", quizScore, catName);
+        document.getElementById("quiz-final").innerHTML =
+          quizScore + '<span class="unit">점</span>';
+        document.getElementById("quiz-new-record").style.display =
+          isNew && quizScore > 0 ? "inline-block" : "none";
+        document.getElementById("quiz-grade").textContent =
+          `[${catName}] ${quizGrade(quizScore)}`;
+
+        const wrongList = document.getElementById("quiz-wrong-list");
+        if (quizWrong.length > 0) {
+          let html = '<div class="wrong-list"><h4>📝 놓친 문제 다시보기</h4>';
+          const unique = [];
+          quizWrong.forEach((w) => {
+            if (!unique.find((u) => u.jamo === w.jamo)) unique.push(w);
+          });
+          unique.slice(0, 12).forEach((w) => {
+            html += `<div class="wrong-item"><span class="jamo">${w.jamo}</span><span class="ans">${w.answers.join(" / ")}</span></div>`;
+          });
+          html += "</div>";
+          wrongList.innerHTML = html;
+        } else {
+          wrongList.innerHTML = "";
+        }
+
+        renderRanking("quiz", "quiz-ranking-result");
+        goTo("quiz-result");
+      }
+
+      function quizGrade(s) {
+        if (s >= 25) return "🏆 한국어 마스터! 자음 보고 다 맞히시네요.";
+        if (s >= 18) return "🚀 훌륭해요. 어휘력 짱.";
+        if (s >= 12) return "✨ 평균 이상! 좋아요.";
+        if (s >= 6) return "🌱 한 번 더 도전해보세요.";
+        return "😊 처음엔 다 그래요. 다시!";
+      }
+
+      // ============================================
+      //  슐테 테이블
+      // ============================================
+      let schulteSize = 3;
+      let schulteNumbers = [];
+      let schulteNext = 1;
+      let schulteTotal = 9;
+      let schulteTimer = null;
+      let schulteStartTime = 0;
+      let schultePenalty = 0;
+
+      function setDifficulty(size, btn) {
+        schulteSize = size;
+        document
+          .querySelectorAll(".diff-btn")
+          .forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+      }
+
+      function startSchulte() {
+        schulteTotal = schulteSize * schulteSize;
+        schulteNext = 1;
+        schultePenalty = 0;
+        goTo("schulte-play");
+
+        document.getElementById("schulte-game").style.display = "none";
+        document.getElementById("schulte-next").textContent = "1";
+        document.getElementById("schulte-time").textContent = "0.0";
+
+        const cd = document.getElementById("schulte-countdown");
+        cd.style.display = "block";
+        let n = 3;
+        cd.textContent = n;
+        cd.style.animation = "none";
+        void cd.offsetWidth;
+        cd.style.animation = "countPulse 1s ease";
+
+        const countInterval = setInterval(() => {
+          n--;
+          if (n > 0) {
+            cd.textContent = n;
+            cd.style.animation = "none";
+            void cd.offsetWidth;
+            cd.style.animation = "countPulse 1s ease";
+          } else {
+            clearInterval(countInterval);
+            cd.style.display = "none";
+            document.getElementById("schulte-game").style.display = "block";
+            renderSchulte();
+            schulteStartTime = Date.now();
+            schulteTimer = setInterval(() => {
+              const elapsed =
+                (Date.now() - schulteStartTime) / 1000 + schultePenalty;
+              document.getElementById("schulte-time").textContent =
+                elapsed.toFixed(1);
+            }, 50);
+          }
+        }, 1000);
+      }
+
+      function renderSchulte() {
+        const grid = document.getElementById("schulte-grid");
+        grid.style.gridTemplateColumns = `repeat(${schulteSize}, 1fr)`;
+        document.getElementById("schulte-size-label").textContent =
+          `${schulteSize}×${schulteSize}`;
+        document.getElementById("schulte-penalty").textContent =
+          schultePenalty + "초";
+
+        schulteNumbers = [];
+        for (let i = 1; i <= schulteTotal; i++) schulteNumbers.push(i);
+        schulteNumbers.sort(() => Math.random() - 0.5);
+
+        grid.innerHTML = "";
+        schulteNumbers.forEach((num) => {
+          const cell = document.createElement("button");
+          cell.className = "schulte-cell";
+          cell.textContent = num;
+          cell.dataset.num = num;
+          cell.onclick = () => clickSchulte(num, cell);
+          grid.appendChild(cell);
+        });
+      }
+
+      function clickSchulte(num, cell) {
+        if (cell.classList.contains("done")) return;
+        if (num === schulteNext) {
+          cell.classList.add("done");
+          schulteNext++;
+          document.getElementById("schulte-next").textContent =
+            schulteNext > schulteTotal ? "✓" : schulteNext;
+          if (schulteNext > schulteTotal) endSchulte();
+        } else {
+          cell.classList.add("wrong");
+          schultePenalty++;
+          document.getElementById("schulte-penalty").textContent =
+            schultePenalty + "초";
+          setTimeout(() => cell.classList.remove("wrong"), 300);
+        }
+      }
+
+      function endSchulte() {
+        clearInterval(schulteTimer);
+        const elapsed = (Date.now() - schulteStartTime) / 1000 + schultePenalty;
+        const finalTime = parseFloat(elapsed.toFixed(1));
+        const sizeLabel = `${schulteSize}×${schulteSize}`;
+        const isNew = saveBestSchulte(finalTime, sizeLabel);
+        document.getElementById("schulte-final").innerHTML =
+          finalTime.toFixed(1) + '<span class="unit">초</span>';
+        document.getElementById("schulte-new-record").style.display = isNew
+          ? "inline-block"
+          : "none";
+        document.getElementById("schulte-grade").textContent =
+          `[${sizeLabel}] ${schulteGrade(finalTime, schulteSize)}`;
+        renderRanking("schulte", "schulte-ranking-result");
+        goTo("schulte-result");
+      }
+
+      function saveBestSchulte(time, sizeLabel) {
+        const scores = loadScores();
+        const list = scores.schulte || [];
+        const entry = {
+          score: time,
+          meta: sizeLabel,
+          date: new Date().toLocaleDateString("ko-KR", {
+            month: "2-digit",
+            day: "2-digit",
+          }),
+        };
+        list.push(entry);
+        list.sort((a, b) => a.score - b.score);
+        scores.schulte = list.slice(0, 5);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(scores));
+        const sameSize = list.filter((e) => e.meta === sizeLabel);
+        return sameSize.length > 0 && sameSize[0].score === time;
+      }
+
+      function schulteGrade(t, size) {
+        if (size === 3) {
+          if (t < 6) return "🚀 번개손! 엄청 빨라요.";
+          if (t < 10) return "✨ 좋아요!";
+          if (t < 15) return "🌱 평균 수준.";
+          return "😊 한 번 더 해봐요.";
+        } else if (size === 5) {
+          if (t < 30) return "🏆 슈퍼브레인! 집중력 최강.";
+          if (t < 45) return "🚀 우수!";
+          if (t < 60) return "✨ 평균 이상.";
+          if (t < 90) return "🌱 평균 정도.";
+          return "😊 연습하면 더 빨라져요.";
+        } else {
+          if (t < 60) return "🏆 천재 수준!";
+          if (t < 90) return "🚀 매우 빠름!";
+          if (t < 120) return "✨ 잘하셨어요.";
+          return "🌱 6×6은 원래 어려워요. 잘하셨어요!";
+        }
+      }
+
+      // 초기화
+      document.addEventListener("DOMContentLoaded", () => {
+        const qi = document.getElementById("quiz-input");
+        if (qi)
+          qi.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") submitQuiz();
+          });
+        updateHomeBests();
+      });
+    </script>
+  </body>
+</html>
